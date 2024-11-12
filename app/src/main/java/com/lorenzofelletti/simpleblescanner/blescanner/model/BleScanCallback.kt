@@ -3,7 +3,6 @@ package com.lorenzofelletti.simpleblescanner.blescanner.model
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.util.Log
-import com.lorenzofelletti.simpleblescanner.BuildConfig.DEBUG
 
 private const val TAG = "TBS: BleScanCallback"
 
@@ -13,10 +12,12 @@ class BleScanCallback(
     private val onScanFailedAction: (Int) -> Unit = {}
 ) : ScanCallback() {
     override fun onScanResult(callbackType: Int, result: ScanResult?) {
-        Log.d(TAG, "BleScanCallback")
+        Log.d(TAG, "onScanResult")
 
         super.onScanResult(callbackType, result)
-        if (DEBUG) Log.d(TAG, "bleScanCallback - onScanResults called")
+
+        Log.v(TAG, "onScanResult: callbackType=[$callbackType], result=[$result]")
+
         onScanResultAction(result)
     }
 
@@ -24,7 +25,9 @@ class BleScanCallback(
         Log.d(TAG, "onBatchScanResults")
 
         super.onBatchScanResults(results)
-        if (DEBUG) Log.d(TAG, "bleScanCallback - onBatchScanResults called")
+
+        Log.v(TAG, "onBatchScanResults: results=[$results]")
+
         onBatchScanResultAction(results)
     }
 
@@ -32,7 +35,9 @@ class BleScanCallback(
         Log.d(TAG, "onScanFailed")
 
         super.onScanFailed(errorCode)
-        if (DEBUG) Log.e(TAG, "bleScanCallback - scan failed with error '$errorCode'")
+
+        Log.v(TAG, "onScanFailed: errorCode=[$errorCode]")
+
         onScanFailedAction(errorCode)
     }
 }

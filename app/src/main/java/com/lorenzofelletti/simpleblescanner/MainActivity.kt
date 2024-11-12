@@ -13,8 +13,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lorenzofelletti.permissions.PermissionManager
-import com.lorenzofelletti.permissions.dispatcher.dsl.*
-import com.lorenzofelletti.simpleblescanner.BuildConfig.DEBUG
+import com.lorenzofelletti.permissions.dispatcher.dsl.checkPermissions
+import com.lorenzofelletti.permissions.dispatcher.dsl.doOnDenied
+import com.lorenzofelletti.permissions.dispatcher.dsl.doOnGranted
+import com.lorenzofelletti.permissions.dispatcher.dsl.showRationaleDialog
+import com.lorenzofelletti.permissions.dispatcher.dsl.withRequestCode
 import com.lorenzofelletti.simpleblescanner.blescanner.BleScanManager
 import com.lorenzofelletti.simpleblescanner.blescanner.adapter.BleDeviceAdapter
 import com.lorenzofelletti.simpleblescanner.blescanner.model.BleDevice
@@ -37,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onCreate")
 
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
 
         permissionManager = PermissionManager(this)
@@ -64,22 +68,24 @@ class MainActivity : AppCompatActivity() {
 
         // BleManager creation
         btManager = getSystemService(BluetoothManager::class.java)
-        bleScanManager = BleScanManager(btManager, 5000, scanCallback = BleScanCallback({
-            val name = it?.device?.address
-            if (name.isNullOrBlank()) return@BleScanCallback
+        bleScanManager = BleScanManager(
+            btManager,
+            5000,
+            scanCallback = BleScanCallback(
+                {
+                    val name = it?.device?.address
+                    if (name.isNullOrBlank()) return@BleScanCallback
 
-            val device = BleDevice(name)
-            if (!foundDevices.contains(device)) {
-                if (DEBUG) {
-                    Log.d(
-                        BleScanCallback::class.java.simpleName,
-                        "${this.javaClass.enclosingMethod?.name} - Found device: $name"
-                    )
+                    val device = BleDevice(name)
+                    if (!foundDevices.contains(device)) {
+                        Log.v(TAG, "onCreate: scanCallback: Found deice name=[$name]")
+
+                        foundDevices.add(device)
+                        adapter.notifyItemInserted(foundDevices.size - 1)
+                    }
                 }
-                foundDevices.add(device)
-                adapter.notifyItemInserted(foundDevices.size - 1)
-            }
-        }))
+            )
+        )
 
         // Adding the actions the manager must do before and after scanning
         bleScanManager.beforeScanActions.add { btnStartScan.isEnabled = false }
@@ -94,11 +100,29 @@ class MainActivity : AppCompatActivity() {
         // Adding the onclick listener to the start scan button
         btnStartScan = findViewById(R.id.btn_start_scan)
         btnStartScan.setOnClickListener {
-            if (DEBUG) Log.i(TAG, "${it.javaClass.simpleName}:${it.id} - onClick event")
+            Log.v(TAG, "onCreate: btnStartScan.setOnClickListener")
 
             // Checks if the required permissions are granted and starts the scan if so, otherwise it requests them
             permissionManager checkRequestAndDispatch BLE_PERMISSION_REQUEST_CODE
         }
+    }
+
+    override fun onResume() {
+        Log.d(TAG, "onResume")
+
+        super.onResume()
+    }
+
+    override fun onPause() {
+        Log.d(TAG, "onPause")
+
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        Log.d(TAG, "onDestroy")
+
+        super.onDestroy()
     }
 
     /**
@@ -121,7 +145,7 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.BLUETOOTH_SCAN,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.BLUETOOTH_ADMIN,
+            Manifest.permission.BLUETOOTH_ADMIN
         )
     }
 }

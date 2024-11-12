@@ -36,7 +36,8 @@ class BleScanManager(
     @SuppressLint("MissingPermission")
     fun scanBleDevices() {
         fun stopScan() {
-            if (DEBUG) Log.d(TAG, "${::scanBleDevices.name} - scan stop")
+            Log.d(TAG, "scanBleDevices: stopScan")
+
             scanning = false
             bleScanner.stopScan(scanCallback)
 
@@ -54,7 +55,7 @@ class BleScanManager(
             executeBeforeScanActions()
 
             // starts scanning
-            if (DEBUG) Log.d(TAG, "${::scanBleDevices.name} - scan start")
+            Log.v(TAG, "scanBleDevices: scanning == false: Start scanning...")
             scanning = true
             bleScanner.startScan(scanCallback)
         }

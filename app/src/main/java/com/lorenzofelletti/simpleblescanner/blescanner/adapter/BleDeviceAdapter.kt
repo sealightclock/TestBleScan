@@ -25,6 +25,7 @@ class BleDeviceAdapter(private val devices: List<BleDevice>) : RecyclerView.Adap
         val context = parent.context
         val inflater = LayoutInflater.from(context)
         val deviceView = inflater.inflate(R.layout.device_row_layout, parent, false)
+
         return ViewHolder(deviceView)
     }
 
@@ -37,8 +38,10 @@ class BleDeviceAdapter(private val devices: List<BleDevice>) : RecyclerView.Adap
     }
 
     override fun getItemCount(): Int {
-        Log.i(TAG, "getItemCount")
+        val count = devices.size
 
-        return devices.size
+        Log.d(TAG, "getItemCount: count=[$count]")
+
+        return count
     }
 }
