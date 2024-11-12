@@ -8,6 +8,8 @@ import android.util.Log
 import com.lorenzofelletti.simpleblescanner.BuildConfig.DEBUG
 import com.lorenzofelletti.simpleblescanner.blescanner.model.BleScanCallback
 
+private const val TAG = "TBS: BleScanManager"
+
 /**
  * A manager for bluetooth LE scanning..
  */
@@ -59,16 +61,18 @@ class BleScanManager(
     }
 
     private fun executeBeforeScanActions() {
+        Log.d(TAG, "executeBeforeScanActions")
+
         executeListOfFunctions(beforeScanActions)
     }
 
     private fun executeAfterScanActions() {
+        Log.d(TAG, "executeAfterScanActions")
+
         executeListOfFunctions(afterScanActions)
     }
 
     companion object {
-        private val TAG = BleScanManager::class.java.simpleName
-
         /**
          * Constant holding the default max scan period time, i.e. the max number of millis
          * scanning will be performed.

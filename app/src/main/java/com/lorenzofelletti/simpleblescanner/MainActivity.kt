@@ -20,6 +20,8 @@ import com.lorenzofelletti.simpleblescanner.blescanner.adapter.BleDeviceAdapter
 import com.lorenzofelletti.simpleblescanner.blescanner.model.BleDevice
 import com.lorenzofelletti.simpleblescanner.blescanner.model.BleScanCallback
 
+private const val TAG = "TBS: MainActivity"
+
 class MainActivity : AppCompatActivity() {
     private lateinit var btnStartScan: Button
 
@@ -32,6 +34,8 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(TAG, "onCreate")
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -104,13 +108,13 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {
+        Log.d(TAG, "onRequestPermissionsResult")
+
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         permissionManager.dispatchOnRequestPermissionsResult(requestCode, grantResults)
     }
 
     companion object {
-        private val TAG = MainActivity::class.java.simpleName
-
         private const val BLE_PERMISSION_REQUEST_CODE = 1
         @RequiresApi(Build.VERSION_CODES.S)
         private val blePermissions = arrayOf(
